@@ -156,8 +156,8 @@ export function CurrencyConverter() {
             </motion.div>
 
             {/* Last Updated Indicator */}
-            <div className="absolute bottom-4 right-4 z-20 pointer-events-none">
-                <span className="text-xs font-light text-white/40 select-none">
+            <div className="absolute bottom-4 right-6 z-20 pointer-events-none">
+                <span className="text-[10px] font-light text-white/20 select-none tracking-wide">
                     Atualizado às {lastUpdated || '--:--'}
                 </span>
             </div>

@@ -98,7 +98,7 @@ export function CurrencyCard({
     return (
         <div
             className={cn(
-                "w-full h-full p-6 md:p-10 flex flex-col justify-center gap-6 transition-all duration-500 relative overflow-hidden group/card",
+                "w-full h-full p-6 md:p-24 flex flex-col justify-center gap-6 transition-all duration-500 relative overflow-hidden group/card",
                 type === "source"
                     ? "bg-gradient-to-b from-white/5 to-transparent border-b md:border-b-0 md:border-r border-white/5 z-20 -mb-px md:mb-0 md:-mr-px"
                     : "bg-gradient-to-t from-white/5 to-transparent transition-colors z-10"
