@@ -2,7 +2,8 @@ import { useState } from "react";
 import { ArrowUpDown } from "lucide-react";
 import { CurrencyCard } from "./CurrencyCard";
 import { CurrencySelector } from "./CurrencySelector";
-import { motion } from "framer-motion"; // Removed AnimatePresence import unused here now
+import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
 import { useCurrency } from "../context/CurrencyContext";
 
 export function CurrencyConverter() {
@@ -12,12 +13,13 @@ export function CurrencyConverter() {
         amount,
         setAmount,
         convertedAmount,
-        swapCurrencies
+        swapCurrencies,
+        lastUpdated
     } = useCurrency();
 
     const [selectorType, setSelectorType] = useState<"source" | "target" | null>(null);
 
-    const containerVariants = {
+    const containerVariants: Variants = {
         active: {
             scale: 1,
             opacity: 1,
@@ -152,6 +154,13 @@ export function CurrencyConverter() {
                 </div>
 
             </motion.div>
+
+            {/* Last Updated Indicator */}
+            <div className="absolute bottom-4 right-4 z-20 pointer-events-none">
+                <span className="text-xs font-light text-white/40 select-none">
+                    Atualizado às {lastUpdated || '--:--'}
+                </span>
+            </div>
         </div>
     );
 }

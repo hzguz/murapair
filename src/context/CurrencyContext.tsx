@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import type { ReactNode } from "react";
 
 // AwesomeAPI response type
 interface AwesomeAPIRate {
@@ -27,6 +28,7 @@ interface CurrencyContextType {
     setAmount: (a: string) => void;
     swapCurrencies: () => void;
     isLoading: boolean;
+    lastUpdated: string | null;
 }
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
@@ -38,6 +40,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     const [convertedAmount, setConvertedAmount] = useState("");
     const [rates, setRates] = useState<Record<string, number>>({ BRL: 1 });
     const [isLoading, setIsLoading] = useState(true);
+    const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
     // Fetch Real-Time Rates from AwesomeAPI (Free, Secure, No Key)
     // We fetch everything relative to BRL (Real) because it's the API's native base.
@@ -60,6 +63,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
                 };
 
                 setRates(newRates);
+                setLastUpdated(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
                 setIsLoading(false);
             } catch (error) {
                 console.error("Failed to fetch rates:", error);
@@ -83,20 +87,22 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 
     // Conversion Logic
     useEffect(() => {
-        if (!amount || isNaN(parseFloat(amount.replace(',', '.')))) {
+        // Parse amount: Handle localized format (BRL uses "1.234,56", USD uses "1,234.56")
+        // Detect format by checking if comma exists (indicates BRL/EUR decimal)
+        let normalizedAmount = amount;
+        if (amount.includes(',')) {
+            // Likely BRL/EUR: dot is thousands, comma is decimal
+            normalizedAmount = amount.replace(/\./g, '').replace(',', '.');
+        } else {
+            // Likely USD: comma is thousands, dot is decimal
+            normalizedAmount = amount.replace(/,/g, '');
+        }
+
+        const val = parseFloat(normalizedAmount);
+        if (isNaN(val)) {
             setConvertedAmount("");
             return;
         }
-
-        // Algorithm: Covert Source -> BRL -> Target
-        // 1. Convert Source to BRL: Amount * Rate(Source->BRL)
-        // 2. Convert BRL to Target: BRLValue / Rate(Target->BRL)
-
-        // Example: 10 USD -> ? EUR
-        // USD->BRL Rate = 5.0. 10 USD = 50 BRL.
-        // EUR->BRL Rate = 6.0. 50 BRL = 50/6 = 8.33 EUR.
-
-        const val = parseFloat(amount.replace(',', '.'));
         const sourceRate = rates[sourceCurrency] || 1;
         const targetRate = rates[targetCurrency] || 1;
 
@@ -127,7 +133,8 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
             setSourceCurrency,
             setTargetCurrency,
             swapCurrencies,
-            isLoading
+            isLoading,
+            lastUpdated
         }}>
             {children}
         </CurrencyContext.Provider>

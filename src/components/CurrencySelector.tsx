@@ -1,8 +1,8 @@
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import type { Variants } from "framer-motion";
 import { useCurrency } from "../context/CurrencyContext";
 import { SUPPORTED_CURRENCIES } from "../lib/constants";
-import { cn } from "../lib/utils";
 import { CurrencyIcon } from "./CurrencyIcon";
 
 interface CurrencySelectorProps {
@@ -11,7 +11,7 @@ interface CurrencySelectorProps {
     type: "source" | "target";
 }
 
-const listVariants = {
+const listVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
@@ -22,7 +22,7 @@ const listVariants = {
     }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
     hidden: { opacity: 0, x: -20, scale: 0.95 },
     visible: {
         opacity: 1,

@@ -1,10 +1,12 @@
+import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import type { HTMLMotionProps } from "framer-motion";
 import { cn } from "../../lib/utils";
 
-interface GlassCardProps extends HTMLMotionProps<"div"> {
+interface GlassCardProps extends Omit<HTMLMotionProps<"div">, "children"> {
     className?: string;
     variant?: "heavy" | "default";
+    children?: ReactNode;
 }
 
 export function GlassCard({ className, variant = "default", children, ...props }: GlassCardProps) {

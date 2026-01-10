@@ -38,17 +38,61 @@ export function CurrencyCard({
 
     const theme = COLOR_THEMES[themeColor] || COLOR_THEMES['default'];
 
+    const formatCalculatorInput = (val: string, currency: string) => {
+        // Determine locale-specific separators
+        const isCommaDecimal = (currency === 'BRL' || currency === 'EUR');
+        const decimalChar = isCommaDecimal ? ',' : '.';
+        const thousandChar = isCommaDecimal ? '.' : ',';
+
+        // 1. Sanitize: Allow only digits and the valid decimal separator
+        // Replace alternate separator if typed (e.g. user types dot in BRL mode -> convert to comma)
+        let sanitized = val;
+        if (isCommaDecimal) {
+            sanitized = sanitized.replace(/\./g, ',');
+        } else {
+            sanitized = sanitized.replace(/,/g, '.');
+        }
+
+        // Remove invalid chars
+        sanitized = sanitized.replace(new RegExp(`[^0-9${decimalChar}]`, 'g'), '');
+
+        // Handle multiple decimal separators: keep only the first one
+        const parts = sanitized.split(decimalChar);
+        let integerPart = parts[0];
+        let decimalPart = parts.length > 1 ? parts.slice(1).join('') : null;
+
+        // 2. Format Integer Part with Thousands Separators
+        // Remove leading zeros unless it's just "0"
+        if (integerPart.length > 1 && integerPart.startsWith('0')) {
+            integerPart = integerPart.replace(/^0+/, '');
+        }
+        if (integerPart === '') integerPart = '0';
+
+        // Apply thousands separator (1000 -> 1.000 or 1,000)
+        const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, thousandChar);
+
+        // 3. Reconstruct
+        let finalValue = formattedInteger;
+
+        if (decimalPart !== null) {
+            // Limit decimal places (optional, but good for currency)
+            const maxDecimals = currency === 'BTC' ? 8 : 2;
+            if (decimalPart.length > maxDecimals) {
+                decimalPart = decimalPart.slice(0, maxDecimals);
+            }
+            finalValue += decimalChar + decimalPart;
+        }
+
+        // Edge case: empty input -> empty output (or 0)
+        if (val === '') return '';
+
+        return finalValue;
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!onValueChange) return;
-        let inputValue = e.target.value;
-        const isBRL = currency === 'BRL';
-        const DecimalSeparator = isBRL ? ',' : '.';
-        inputValue = inputValue.replace(/[^0-9.,]/g, '');
-        if (isBRL) inputValue = inputValue.replace(/\./g, ',');
-        else inputValue = inputValue.replace(/,/g, '.');
-        const parts = inputValue.split(DecimalSeparator);
-        if (parts.length > 2) inputValue = parts[0] + DecimalSeparator + parts.slice(1).join('');
-        onValueChange(inputValue);
+        const formatted = formatCalculatorInput(e.target.value, currency);
+        onValueChange(formatted);
     };
 
     return (
@@ -93,10 +137,7 @@ export function CurrencyCard({
                             <div className="flex items-center gap-2 relative">
                                 {/* TEXT ANIMATION: CURRENCY NAME */}
                                 <div className="relative">
-                                    {/* Ghost Text to hold width */}
                                     <span className="text-3xl md:text-4xl font-semibold opacity-0 select-none tracking-tight">{currency}</span>
-
-                                    {/* Animated Text Overlay */}
                                     <div className="absolute inset-0">
                                         <AnimatePresence mode="wait">
                                             <motion.span
@@ -154,11 +195,14 @@ export function CurrencyCard({
                         value={value}
                         onChange={handleInputChange}
                         readOnly={readOnly}
-                        placeholder="0"
+                        placeholder="0,00"
+                        // Prevent invalid chars
                         onKeyDown={(e) => {
+                            // Allow control keys
                             if ([46, 8, 9, 27, 13, 110, 190, 188].indexOf(e.keyCode) !== -1 ||
                                 (e.ctrlKey === true && [65, 67, 86, 88].indexOf(e.keyCode) !== -1) ||
                                 (e.keyCode >= 35 && e.keyCode <= 39)) return;
+                            // Ensure only numbers (mask will handle the rest)
                             if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
                                 e.preventDefault();
                             }
