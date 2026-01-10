@@ -28,10 +28,10 @@ export function CurrencyConverter() {
             transition: { type: "spring", stiffness: 300, damping: 30 }
         },
         inactive: {
-            scale: 0.92,
-            opacity: 0.8,
-            filter: "blur(4px) brightness(0.7)",
-            borderRadius: "2rem",
+            scale: 0.96,
+            opacity: 1,
+            filter: "blur(2px) brightness(0.85)",
+            borderRadius: "1rem",
             transition: { type: "spring", stiffness: 300, damping: 30 }
         }
     };
@@ -112,7 +112,6 @@ export function CurrencyConverter() {
                     />
                 </div>
 
-                {/* Swap Button Mobile */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none md:hidden">
                     <motion.button
                         animate={{ rotate: sourceCurrency === 'BRL' ? 360 : 180 }}
@@ -120,9 +119,8 @@ export function CurrencyConverter() {
                         whileTap={{ scale: 0.9 }}
                         whileHover={{ scale: 1.1, boxShadow: "0 0 30px rgba(255,255,255,0.15)" }}
                         onClick={swapCurrencies}
-                        className="w-16 h-16 rounded-full bg-[#0A0A0A] border border-white/10 flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.5)] z-50 pointer-events-auto relative overflow-hidden group"
+                        className="w-16 h-16 rounded-full bg-[#0A0A0A] hover:bg-[#151515] border border-white/10 flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.5)] z-50 pointer-events-auto relative overflow-hidden"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                         <ArrowUpDown className="text-white/90 relative z-10" size={24} />
                     </motion.button>
                 </div>
@@ -134,7 +132,7 @@ export function CurrencyConverter() {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9, rotate: 180 }}
                         onClick={swapCurrencies}
-                        className="relative w-14 h-14 rounded-full bg-black border border-white/10 flex items-center justify-center hover:bg-white/5 transition-colors shadow-[0_0_20px_rgba(0,0,0,0.5)]"
+                        className="relative w-14 h-14 rounded-full bg-[#0A0A0A] hover:bg-[#151515] border border-white/10 flex items-center justify-center transition-colors shadow-[0_0_20px_rgba(0,0,0,0.5)]"
                         title="Swap Currencies"
                     >
                         <ArrowUpDown className="text-white" size={20} />

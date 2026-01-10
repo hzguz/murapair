@@ -71,7 +71,7 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-xl z-50 pointer-events-auto"
+                        className="fixed inset-0 bg-black/40 backdrop-blur-md z-50 pointer-events-auto"
                     />
 
                     {/* Drawer - Super Rounded & Floating */}
