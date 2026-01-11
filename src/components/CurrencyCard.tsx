@@ -38,61 +38,11 @@ export function CurrencyCard({
 
     const theme = COLOR_THEMES[themeColor] || COLOR_THEMES['default'];
 
-    const formatCalculatorInput = (val: string, currency: string) => {
-        // Determine locale-specific separators
-        const isCommaDecimal = (currency === 'BRL' || currency === 'EUR');
-        const decimalChar = isCommaDecimal ? ',' : '.';
-        const thousandChar = isCommaDecimal ? '.' : ',';
-
-        // 1. Sanitize: Allow only digits and the valid decimal separator
-        // Replace alternate separator if typed (e.g. user types dot in BRL mode -> convert to comma)
-        let sanitized = val;
-        if (isCommaDecimal) {
-            sanitized = sanitized.replace(/\./g, ',');
-        } else {
-            sanitized = sanitized.replace(/,/g, '.');
-        }
-
-        // Remove invalid chars
-        sanitized = sanitized.replace(new RegExp(`[^0-9${decimalChar}]`, 'g'), '');
-
-        // Handle multiple decimal separators: keep only the first one
-        const parts = sanitized.split(decimalChar);
-        let integerPart = parts[0];
-        let decimalPart = parts.length > 1 ? parts.slice(1).join('') : null;
-
-        // 2. Format Integer Part with Thousands Separators
-        // Remove leading zeros unless it's just "0"
-        if (integerPart.length > 1 && integerPart.startsWith('0')) {
-            integerPart = integerPart.replace(/^0+/, '');
-        }
-        if (integerPart === '') integerPart = '0';
-
-        // Apply thousands separator (1000 -> 1.000 or 1,000)
-        const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, thousandChar);
-
-        // 3. Reconstruct
-        let finalValue = formattedInteger;
-
-        if (decimalPart !== null) {
-            // Limit decimal places (optional, but good for currency)
-            const maxDecimals = currency === 'BTC' ? 8 : 2;
-            if (decimalPart.length > maxDecimals) {
-                decimalPart = decimalPart.slice(0, maxDecimals);
-            }
-            finalValue += decimalChar + decimalPart;
-        }
-
-        // Edge case: empty input -> empty output (or 0)
-        if (val === '') return '';
-
-        return finalValue;
-    };
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!onValueChange) return;
-        const formatted = formatCalculatorInput(e.target.value, currency);
-        onValueChange(formatted);
+        // Allow free input - only filter non-numeric chars except . and ,
+        const val = e.target.value.replace(/[^0-9.,]/g, '');
+        onValueChange(val);
     };
 
     return (
