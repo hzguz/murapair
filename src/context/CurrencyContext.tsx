@@ -87,31 +87,36 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 
     // Conversion Logic
     useEffect(() => {
-        // Parse amount: Handle localized format (BRL uses "1.234,56", USD uses "1,234.56")
-        // Detect format by checking if comma exists (indicates BRL/EUR decimal)
+        // Parse amount based on SOURCE currency format
+        // BRL/EUR use comma as decimal separator: "1.234,56"
+        // USD/GBP/BTC use dot as decimal separator: "1,234.56"
         let normalizedAmount = amount;
-        if (amount.includes(',')) {
-            // Likely BRL/EUR: dot is thousands, comma is decimal
+        const isSourceCommaDecimal = (sourceCurrency === 'BRL' || sourceCurrency === 'EUR');
+
+        if (isSourceCommaDecimal) {
+            // BRL/EUR: dot is thousands, comma is decimal
             normalizedAmount = amount.replace(/\./g, '').replace(',', '.');
         } else {
-            // Likely USD: comma is thousands, dot is decimal
+            // USD/GBP/BTC: comma is thousands, dot is decimal
             normalizedAmount = amount.replace(/,/g, '');
         }
 
         const val = parseFloat(normalizedAmount);
-        if (isNaN(val)) {
+        if (isNaN(val) || val === 0) {
             setConvertedAmount("");
             return;
         }
+
         const sourceRate = rates[sourceCurrency] || 1;
         const targetRate = rates[targetCurrency] || 1;
 
         const valInBRL = val * sourceRate;
         const result = valInBRL / targetRate;
 
-        // Precision
+        // Format using en-US locale (comma=thousands, dot=decimal)
         const precision = targetCurrency === 'BTC' ? 8 : 2;
-        setConvertedAmount(result.toLocaleString('pt-BR', {
+
+        setConvertedAmount(result.toLocaleString('en-US', {
             minimumFractionDigits: 0,
             maximumFractionDigits: precision
         }));

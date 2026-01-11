@@ -38,10 +38,22 @@ export function CurrencyCard({
 
     const theme = COLOR_THEMES[themeColor] || COLOR_THEMES['default'];
 
+    const MAX_CHARS = 15;
+
+    // Progressive font size based on value length
+    const getFontSizeClass = (length: number) => {
+        if (length > 14) return "text-xl md:text-2xl";
+        if (length > 12) return "text-2xl md:text-3xl";
+        if (length > 10) return "text-3xl md:text-4xl";
+        if (length > 7) return "text-4xl md:text-5xl";
+        return "text-5xl md:text-6xl";
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!onValueChange) return;
-        // Allow free input - only filter non-numeric chars except . and ,
-        const val = e.target.value.replace(/[^0-9.,]/g, '');
+        // Filter non-numeric chars and limit length
+        let val = e.target.value.replace(/[^0-9.,]/g, '');
+        if (val.length > MAX_CHARS) val = val.slice(0, MAX_CHARS);
         onValueChange(val);
     };
 
@@ -58,7 +70,7 @@ export function CurrencyCard({
                 <div className="flex flex-col">
                     {isLocked && (
                         <span className="flex items-center gap-2 text-[10px] text-amber-400 font-bold uppercase tracking-widest mb-3 ml-1">
-                            <Lock size={12} className="animate-pulse" /> Taxa Fixa
+                            <Lock size={12} className="animate-pulse" /> Fixed Rate
                         </span>
                     )}
                     <button onClick={onCurrencyChange} className="flex items-center gap-4 group/btn text-left">
@@ -118,7 +130,7 @@ export function CurrencyCard({
                                         transition={{ duration: 0.2, delay: 0.05 }}
                                         className={cn("text-sm font-light pl-0.5 tracking-tight absolute inset-0 whitespace-nowrap", theme.text)}
                                     >
-                                        {type === 'source' ? 'Você envia' : 'Você recebe'}
+                                        {type === 'source' ? 'From' : 'To'}
                                     </motion.span>
                                 </AnimatePresence>
                             </div>
@@ -133,8 +145,8 @@ export function CurrencyCard({
                         value={value || "0"}
                         currency={currency}
                         className={cn(
-                            "bg-transparent font-medium text-white block w-full text-left tracking-tight transition-all",
-                            value.length > 8 ? "text-4xl md:text-5xl" : "text-5xl md:text-6xl",
+                            "bg-transparent font-medium text-white block w-full text-left tracking-tight transition-[font-size] duration-150",
+                            getFontSizeClass(value.length),
                             "cursor-default text-white/80"
                         )}
                     />
@@ -158,8 +170,8 @@ export function CurrencyCard({
                             }
                         }}
                         className={cn(
-                            "bg-transparent font-medium text-white placeholder:text-white/5 outline-none w-full text-left tracking-tight transition-all",
-                            value.length > 8 ? "text-4xl md:text-5xl" : "text-5xl md:text-6xl",
+                            "bg-transparent font-medium text-white placeholder:text-white/5 outline-none w-full text-left tracking-tight transition-[font-size] duration-150",
+                            getFontSizeClass(value.length),
                             "cursor-text"
                         )}
                         style={{ fontWeight: 500 }}

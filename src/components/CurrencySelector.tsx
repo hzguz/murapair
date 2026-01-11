@@ -52,10 +52,10 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
 
     const getCurrencyName = (curr: string) => {
         const names = {
-            'BRL': 'Real Brasileiro',
-            'USD': 'Dólar Americano',
+            'BRL': 'Brazilian Real',
+            'USD': 'US Dollar',
             'EUR': 'Euro',
-            'GBP': 'Libra Esterlina',
+            'GBP': 'British Pound',
             'BTC': 'Bitcoin'
         };
         return names[curr as keyof typeof names] || curr;
@@ -83,7 +83,7 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                         className="fixed bottom-4 left-4 right-4 z-[60] bg-[#111] rounded-[2rem] border border-white/10 p-6 pb-8 max-h-[80vh] overflow-y-auto shadow-2xl origin-bottom"
                     >
                         <div className="flex justify-between items-center mb-6 px-2">
-                            <h2 className="text-xl font-semibold text-white tracking-tight">Selecionar Moeda</h2>
+                            <h2 className="text-xl font-semibold text-white tracking-tight">Select Currency</h2>
                             <button
                                 onClick={onClose}
                                 className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
