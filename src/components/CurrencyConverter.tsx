@@ -13,8 +13,7 @@ export function CurrencyConverter() {
         amount,
         setAmount,
         convertedAmount,
-        swapCurrencies,
-        lastUpdated
+        swapCurrencies
     } = useCurrency();
 
     const [selectorType, setSelectorType] = useState<"source" | "target" | null>(null);
