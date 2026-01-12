@@ -148,12 +148,26 @@
     --foreground: #f8fafc;
   }
 
+  html,
+  body {
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     letter-spacing: -0.02em;
     /* Tight Apple tracking */
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  input,
+  textarea {
+    user-select: text;
+    -webkit-user-select: text;
   }
 }
 

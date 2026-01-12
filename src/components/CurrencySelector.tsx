@@ -122,7 +122,7 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                         animate={{ y: 0 }}
                         exit={{ y: "100%" }}
                         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                        className="fixed bottom-0 left-0 right-0 md:bottom-4 md:left-4 md:right-4 z-[60] bg-[#111] md:rounded-[2rem] rounded-t-[2rem] border-t md:border border-white/10 p-0 md:p-6 pb-2 h-[50vh] md:h-[60vh] shadow-2xl origin-bottom flex flex-col"
+                        className="fixed bottom-0 left-0 right-0 md:bottom-4 md:left-4 md:right-4 z-[60] bg-[#111] md:rounded-[2rem] rounded-t-[2rem] border-t md:border border-white/10 p-0 md:p-6 pb-2 h-[70vh] md:h-[60vh] shadow-2xl origin-bottom flex flex-col"
                     >
                         <div className="flex justify-between items-center mb-4 md:mb-6 px-6 pt-6 md:pt-0 md:px-2 shrink-0">
                             <h2 className="text-xl font-semibold text-white tracking-tight">{t.selectCurrency}</h2>
@@ -334,12 +334,12 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
 
                         {/* Fixed Save Button - Only show in Pairs tab */}
                         {activeTab === 'pairs' && !isPairSaved(sourceCurrency, targetCurrency) && (
-                            <div className="shrink-0 pt-4 pb-2 px-2">
+                            <div className="shrink-0 pt-2 pb-6 md:pb-2 px-6 md:px-2"> { /* More padding bottom for mobile safe area */}
                                 <button
                                     onClick={() => savePair(sourceCurrency, targetCurrency)}
-                                    className="w-full p-4 rounded-[1.2rem] bg-[#292929] hover:bg-[#3a3a3a] active:scale-[0.98] transition-all flex items-center justify-center shadow-lg"
+                                    className="w-full p-3 md:p-4 rounded-[1.2rem] bg-[#292929] hover:bg-[#3a3a3a] active:scale-[0.98] transition-all flex items-center justify-center shadow-lg"
                                 >
-                                    <span className="text-white font-semibold">
+                                    <span className="text-white text-sm md:text-base font-semibold">
                                         {t.savePair}
                                     </span>
                                 </button>

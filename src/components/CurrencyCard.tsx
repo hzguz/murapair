@@ -44,11 +44,11 @@ export function CurrencyCard({
 
     // Progressive font size based on value length
     const getFontSizeClass = (length: number) => {
-        if (length > 14) return "text-xl md:text-2xl";
-        if (length > 12) return "text-2xl md:text-3xl";
-        if (length > 10) return "text-3xl md:text-4xl";
-        if (length > 7) return "text-4xl md:text-5xl";
-        return "text-5xl md:text-6xl";
+        if (length > 14) return "text-lg md:text-2xl"; // Smaller on mobile
+        if (length > 12) return "text-xl md:text-3xl";
+        if (length > 10) return "text-2xl md:text-4xl";
+        if (length > 7) return "text-3xl md:text-5xl";
+        return "text-4xl md:text-6xl"; // Max mobile size 4xl (36px) is safer than 5xl
     };
 
     const formatHumanReadable = (value: string) => {
@@ -118,7 +118,7 @@ export function CurrencyCard({
     return (
         <div
             className={cn(
-                "w-full h-full p-6 md:p-24 flex flex-col justify-center gap-6 transition-all duration-500 relative overflow-hidden group/card",
+                "w-full h-full p-5 md:p-24 flex flex-col justify-center gap-4 md:gap-6 transition-all duration-500 relative overflow-hidden group/card",
                 type === "source"
                     ? "bg-gradient-to-b from-white/5 to-transparent border-b md:border-b-0 md:border-r border-white/5 z-20 -mb-px md:mb-0 md:-mr-px"
                     : "bg-gradient-to-t from-white/5 to-transparent transition-colors z-10"
