@@ -1,7 +1,7 @@
-import { X, Star, Trash2, ArrowRight, Save } from "lucide-react";
+import { X, Star, Trash2, ArrowRight, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Variants } from "framer-motion";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useCurrency } from "../context/CurrencyContext";
 import { useLanguage } from "../context/LanguageContext";
 import { cn } from "../lib/utils";
@@ -92,13 +92,15 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
     };
 
     // Sort: Favorites first, then Others. Within each group: Alphabetical (or default order)
-    const sortedCurrencies = [...availableCurrencies].sort((a, b) => {
-        const isFavA = favorites.includes(a);
-        const isFavB = favorites.includes(b);
-        if (isFavA && !isFavB) return -1;
-        if (!isFavA && isFavB) return 1;
-        return 0; // Maintain default order otherwise
-    });
+    const sortedCurrencies = useMemo(() => {
+        return [...availableCurrencies].sort((a, b) => {
+            const isFavA = favorites.includes(a);
+            const isFavB = favorites.includes(b);
+            if (isFavA && !isFavB) return -1;
+            if (!isFavA && isFavB) return 1;
+            return 0; // Maintain default order otherwise
+        });
+    }, [availableCurrencies, favorites]);
 
     return (
         <AnimatePresence>
@@ -123,38 +125,52 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                     >
                         <div className="flex justify-between items-center mb-6 px-2 shrink-0">
                             <h2 className="text-xl font-semibold text-white tracking-tight">{t.selectCurrency}</h2>
-                            <button
+                            <motion.button
+                                whileHover={{ scale: 1.1, rotate: 90 }}
+                                whileTap={{ scale: 0.9 }}
                                 onClick={onClose}
                                 className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
                             >
                                 <X size={18} className="text-white" />
-                            </button>
+                            </motion.button>
                         </div>
 
-                        {/* Tabs */}
-                        <div className="flex gap-2 mb-4 px-2">
-                            <button
-                                onClick={() => setActiveTab('currencies')}
-                                className={cn(
-                                    "flex-1 py-3 rounded-xl font-medium text-sm transition-all",
-                                    activeTab === 'currencies'
-                                        ? "bg-white text-black shadow-lg"
-                                        : "bg-white/5 text-white/50 hover:bg-white/10"
-                                )}
-                            >
-                                {t.selectCurrency}
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('pairs')}
-                                className={cn(
-                                    "flex-1 py-3 rounded-xl font-medium text-sm transition-all",
-                                    activeTab === 'pairs'
-                                        ? "bg-white text-black shadow-lg"
-                                        : "bg-white/5 text-white/50 hover:bg-white/10"
-                                )}
-                            >
-                                Saved Pairs
-                            </button>
+                        {/* Toggle Switch */}
+                        <div className="relative flex mb-4 px-2">
+                            <div className="relative flex w-full bg-white/5 rounded-full p-1">
+                                {/* Sliding Background */}
+                                <motion.div
+                                    className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-full shadow-lg"
+                                    initial={false}
+                                    animate={{
+                                        left: activeTab === 'currencies' ? '4px' : 'calc(50% + 0px)'
+                                    }}
+                                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                                />
+
+                                <button
+                                    onClick={() => setActiveTab('currencies')}
+                                    className={cn(
+                                        "flex-1 py-3 rounded-full font-medium text-sm transition-colors relative z-10 flex items-center justify-center gap-2",
+                                        activeTab === 'currencies'
+                                            ? "text-black"
+                                            : "text-white/50 hover:text-white/70"
+                                    )}
+                                >
+                                    {t.selectCurrency}
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('pairs')}
+                                    className={cn(
+                                        "flex-1 py-3 rounded-full font-medium text-sm transition-colors relative z-10 flex items-center justify-center gap-2",
+                                        activeTab === 'pairs'
+                                            ? "text-black"
+                                            : "text-white/50 hover:text-white/70"
+                                    )}
+                                >
+                                    {t.savedPairs}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Scrollable Container Wrapper with Relative for Gradients */}
@@ -176,12 +192,11 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                             <div
                                 ref={scrollRef}
                                 onScroll={checkScroll}
-                                className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 pr-2 pt-2 scroll-smooth"
+                                className="flex-1 overflow-y-auto min-h-0 px-4 pt-4 pb-4 scroll-smooth" // Increased padding to ensure zoom/shadows aren't clipped
                             >
                                 {activeTab === 'currencies' ? (
                                     <motion.div
                                         key="currencies-list"
-                                        layout
                                         variants={listVariants}
                                         initial="hidden"
                                         animate="visible"
@@ -195,37 +210,45 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                                                     layout
                                                     variants={itemVariants}
                                                     key={curr}
-                                                    className="flex items-center gap-2"
                                                 >
                                                     <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            toggleFavorite(curr);
-                                                        }}
-                                                        className="p-3 rounded-full hover:bg-white/10 transition-colors group/star"
-                                                    >
-                                                        <Star
-                                                            size={16}
-                                                            className={cn(
-                                                                "transition-colors",
-                                                                isFav ? "fill-amber-400 text-amber-400" : "text-white/20 group-hover/star:text-white/50"
-                                                            )}
-                                                        />
-                                                    </button>
-
-                                                    <button
                                                         onClick={() => handleSelect(curr)}
-                                                        className="flex-1 flex items-center gap-4 p-3 rounded-[1.2rem] border border-white/5 bg-white/5 hover:bg-white/10 hover:scale-[1.01] active:scale-[0.99] transition-all group text-left"
+                                                        className="w-full flex items-center gap-4 p-3 rounded-[1.2rem] border border-white/5 bg-white/5 hover:bg-white/10 hover:scale-[1.01] active:scale-[0.99] transition-all group text-left relative"
                                                     >
-                                                        <div className="w-12 h-12 rounded-full overflow-hidden shadow-md">
+                                                        <div className="w-12 h-12 rounded-full overflow-hidden shadow-md shrink-0">
                                                             <CurrencyIcon currency={curr} className="w-full h-full" />
                                                         </div>
-                                                        <div className="flex flex-col items-start">
+                                                        <div className="flex flex-col items-start flex-1">
                                                             <span className="text-lg font-semibold text-white tracking-tight">{curr}</span>
                                                             <span className="text-xs text-white/50 font-medium">
                                                                 {t.currencies[curr] || curr}
                                                             </span>
                                                         </div>
+
+                                                        <motion.button
+                                                            whileHover={{ scale: 1.1 }}
+                                                            whileTap={{ scale: 0.9 }}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                toggleFavorite(curr);
+                                                            }}
+                                                            className="p-3 rounded-full hover:bg-white/10 transition-colors group/star z-10 outline-none"
+                                                        >
+                                                            <motion.div
+                                                                key={isFav ? "fav" : "unfav"}
+                                                                initial={{ scale: 0.5, opacity: 0.5 }}
+                                                                animate={{ scale: 1, opacity: 1 }}
+                                                                transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                                                            >
+                                                                <Star
+                                                                    size={18}
+                                                                    className={cn(
+                                                                        "transition-colors duration-300",
+                                                                        isFav ? "fill-amber-400 text-amber-400" : "text-white/20 group-hover/star:text-white/50"
+                                                                    )}
+                                                                />
+                                                            </motion.div>
+                                                        </motion.button>
                                                     </button>
                                                 </motion.div>
                                             )
@@ -237,9 +260,9 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                                         {savedPairs.length === 0 && (
                                             <div className="flex-1 flex flex-col items-center justify-center text-white/30 text-sm py-10">
                                                 <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-                                                    <Star size={24} className="opacity-50" />
+                                                    <Sparkles size={24} className="opacity-50" />
                                                 </div>
-                                                <p>No pairs saved yet.</p>
+                                                <p>{t.noPairsSaved}</p>
                                             </div>
                                         )}
 
@@ -273,7 +296,7 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                                                                 <span className="text-base font-semibold text-white tracking-tight">{pair.target}</span>
                                                             </div>
                                                             <span className="text-xs text-white/40 font-medium">
-                                                                {pair.source === sourceCurrency && pair.target === targetCurrency ? '(Active)' : 'Load Pair'}
+                                                                {pair.source === sourceCurrency && pair.target === targetCurrency ? t.activePair : t.loadPair}
                                                             </span>
                                                         </div>
                                                     </button>
@@ -313,11 +336,10 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                             <div className="shrink-0 pt-4 pb-2 px-2">
                                 <button
                                     onClick={() => savePair(sourceCurrency, targetCurrency)}
-                                    className="w-full p-4 rounded-[1.2rem] bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-900/30"
+                                    className="w-full p-4 rounded-[1.2rem] bg-[#292929] hover:bg-[#3a3a3a] active:scale-[0.98] transition-all flex items-center justify-center shadow-lg"
                                 >
-                                    <Save size={18} className="text-white" />
                                     <span className="text-white font-semibold">
-                                        Save {sourceCurrency} → {targetCurrency}
+                                        {t.savePair}
                                     </span>
                                 </button>
                             </div>

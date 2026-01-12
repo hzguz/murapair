@@ -135,9 +135,8 @@ export function CurrencyCard({
 
                         {/* Dynamic Icon Container */}
                         <div className={cn(
-                            "w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center border transition-all duration-300 shadow-xl group-hover/btn:scale-105 shrink-0 relative overflow-hidden",
-                            theme.border,
-                            theme.bg
+                            "w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center border border-transparent transition-all duration-300 shadow-lg group-hover/btn:scale-105 shrink-0 relative overflow-hidden",
+                            "bg-white/[0.03]"
                         )}>
                             <AnimatePresence mode="wait">
                                 <motion.div

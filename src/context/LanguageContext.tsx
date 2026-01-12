@@ -12,6 +12,11 @@ interface Translations {
     trillion: string;
     quadrillion: string;
     selectCurrency: string;
+    savePair: string;
+    savedPairs: string;
+    noPairsSaved: string;
+    activePair: string;
+    loadPair: string;
     currencies: Record<string, string>;
     plural: {
         million: string;
@@ -31,6 +36,11 @@ const translations: Record<Language, Translations> = {
         trillion: 'Trilhão',
         quadrillion: 'Quatrilhão',
         selectCurrency: 'Selecione a Moeda',
+        savePair: 'Salvar par atual',
+        savedPairs: 'Pares Salvos',
+        noPairsSaved: 'Nenhum par salvo ainda.',
+        activePair: '(Ativo)',
+        loadPair: 'Carregar',
         currencies: {
             'BRL': 'Real Brasileiro',
             'USD': 'Dólar Americano',
@@ -62,6 +72,11 @@ const translations: Record<Language, Translations> = {
         trillion: 'Trillion',
         quadrillion: 'Quadrillion',
         selectCurrency: 'Select Currency',
+        savePair: 'Save current pair',
+        savedPairs: 'Saved Pairs',
+        noPairsSaved: 'No pairs saved yet.',
+        activePair: '(Active)',
+        loadPair: 'Load',
         currencies: {
             'BRL': 'Brazilian Real',
             'USD': 'US Dollar',
