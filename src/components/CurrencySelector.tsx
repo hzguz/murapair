@@ -193,7 +193,7 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                             <div
                                 ref={scrollRef}
                                 onScroll={checkScroll}
-                                className="flex-1 overflow-y-auto min-h-0 px-4 pt-4 pb-4 scroll-smooth" // Fixed: Consistent padding on mobile/desktop
+                                className="flex-1 overflow-y-auto min-h-0 px-4 pt-4 pb-32 scroll-smooth" // Increased padding bottom for floating button
                             >
                                 {activeTab === 'currencies' ? (
                                     <motion.div
@@ -326,7 +326,7 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                                         animate={{ opacity: 1 }}
                                         exit={{ opacity: 0 }}
                                         transition={{ duration: 0.2 }}
-                                        className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#111] to-transparent z-10 pointer-events-none"
+                                        className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#111] to-transparent z-10 pointer-events-none hidden" // Hidden gradient as requested
                                     />
                                 )}
                             </AnimatePresence>
@@ -334,10 +334,10 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
 
                         {/* Fixed Save Button - Only show in Pairs tab */}
                         {activeTab === 'pairs' && !isPairSaved(sourceCurrency, targetCurrency) && (
-                            <div className="shrink-0 pt-2 pb-6 md:pb-2 px-6 md:px-2"> { /* More padding bottom for mobile safe area */}
+                            <div className="absolute bottom-6 left-6 right-6 md:static md:mt-auto md:px-2 md:pb-2">
                                 <button
                                     onClick={() => savePair(sourceCurrency, targetCurrency)}
-                                    className="w-full p-3 md:p-4 rounded-[1.2rem] bg-[#292929] hover:bg-[#3a3a3a] active:scale-[0.98] transition-all flex items-center justify-center shadow-lg"
+                                    className="w-full p-3 md:p-4 rounded-full bg-[#292929] hover:bg-[#3a3a3a] active:scale-[0.98] transition-all flex items-center justify-center shadow-lg"
                                 >
                                     <span className="text-white text-sm md:text-base font-semibold">
                                         {t.savePair}
@@ -346,8 +346,7 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                             </div>
                         )}
 
-                        {/* Safe Area for Mobile */}
-                        <div className="h-6 md:hidden shrink-0" />
+                        {/* Spacer Removed */}
                     </motion.div>
                 </>
             )}
