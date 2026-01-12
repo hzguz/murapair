@@ -14,12 +14,15 @@ export default {
       },
       fontFamily: {
         sans: [
+          "SF Pro Text",
           "-apple-system",
           "BlinkMacSystemFont",
-          "San Francisco",
-          "Segoe UI",
-          "Roboto",
-          "Helvetica Neue",
+          "sans-serif"
+        ],
+        display: [
+          "SF Pro Display",
+          "-apple-system",
+          "BlinkMacSystemFont",
           "sans-serif"
         ],
       },
