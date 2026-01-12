@@ -221,7 +221,7 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                                                         </div>
                                                         <div className="flex flex-col items-start flex-1">
                                                             <span className="text-base md:text-lg font-semibold text-white tracking-tight">{curr}</span>
-                                                            <span className="text-xs text-white/50 font-medium">
+                                                            <span className="text-xs text-white/50 font-normal">
                                                                 {t.currencies[curr] || curr}
                                                             </span>
                                                         </div>
