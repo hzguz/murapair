@@ -20,5 +20,11 @@ export const SUPPORTED_CURRENCIES = [
     'USD', // Pinned second
     'EUR',
     'GBP',
+    'JPY',
+    'CAD',
+    'AUD',
+    'ARS',
+    'CNY',
+    'CHF',
     'BTC'  // Only crypto allowed
 ];

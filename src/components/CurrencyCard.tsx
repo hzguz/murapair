@@ -3,6 +3,7 @@ import { cn } from "../lib/utils";
 import { CurrencyIcon } from "./CurrencyIcon";
 import { MotionNumber } from "./MotionNumber";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "../context/LanguageContext";
 
 const COLOR_THEMES: Record<string, { border: string, bg: string, text: string, glow: string }> = {
     'emerald': { border: 'border-emerald-500/10', bg: 'bg-emerald-500/10', text: 'text-emerald-400/60', glow: 'bg-emerald-500/20' },
@@ -37,8 +38,9 @@ export function CurrencyCard({
 }: CurrencyCardProps) {
 
     const theme = COLOR_THEMES[themeColor] || COLOR_THEMES['default'];
+    const { t, language } = useLanguage();
 
-    const MAX_CHARS = 15;
+
 
     // Progressive font size based on value length
     const getFontSizeClass = (length: number) => {
@@ -49,11 +51,67 @@ export function CurrencyCard({
         return "text-5xl md:text-6xl";
     };
 
+    const formatHumanReadable = (value: string) => {
+        let rawValue: number;
+
+        // PT vs EN formatting
+        if (language === 'pt') {
+            if (readOnly) {
+                // Context provides en-US format (comma=thousand, dot=decimal)
+                rawValue = parseFloat(value.replace(/,/g, ''));
+            } else {
+                // Input provides pt-BR format (dot=thousand, comma=decimal)
+                rawValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+            }
+        } else {
+            // EN-US input: comma=thousand
+            rawValue = parseFloat(value.replace(/,/g, ''));
+        }
+
+        if (isNaN(rawValue) || rawValue < 1000) return null;
+
+        const formatNum = (val: number) => {
+            return val.toLocaleString(language === 'pt' ? 'pt-BR' : 'en-US', { maximumFractionDigits: 1 });
+        }
+
+        if (rawValue >= 1_000_000_000_000_000) {
+            const val = rawValue / 1_000_000_000_000_000;
+            return `${formatNum(val)} ${val === 1 ? t.quadrillion : t.plural.quadrillion}`;
+        }
+        if (rawValue >= 1_000_000_000_000) {
+            const val = rawValue / 1_000_000_000_000;
+            return `${formatNum(val)} ${val === 1 ? t.trillion : t.plural.trillion}`;
+        }
+        if (rawValue >= 1_000_000_000) {
+            const val = rawValue / 1_000_000_000;
+            return `${formatNum(val)} ${val === 1 ? t.billion : t.plural.billion}`;
+        }
+        if (rawValue >= 1_000_000) {
+            const val = rawValue / 1_000_000;
+            return `${formatNum(val)} ${val === 1 ? t.million : t.plural.million}`;
+        }
+        if (rawValue >= 1_000) {
+            const val = rawValue / 1_000;
+            return `${formatNum(val)} ${t.thousand}`;
+        }
+        return null;
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!onValueChange) return;
-        // Filter non-numeric chars and limit length
-        let val = e.target.value.replace(/[^0-9.,]/g, '');
-        if (val.length > MAX_CHARS) val = val.slice(0, MAX_CHARS);
+
+        // Allow only numbers and comma
+        let val = e.target.value.replace(/[^0-9,]/g, '');
+
+        // Prevent multiple commas
+        const commaCount = (val.match(/,/g) || []).length;
+        if (commaCount > 1) {
+            return;
+        }
+
+        // Limit length
+        if (val.length > 15) val = val.slice(0, 15);
+
         onValueChange(val);
     };
 
@@ -130,7 +188,7 @@ export function CurrencyCard({
                                         transition={{ duration: 0.2, delay: 0.05 }}
                                         className={cn("text-sm font-light pl-0.5 tracking-tight absolute inset-0 whitespace-nowrap", theme.text)}
                                     >
-                                        {type === 'source' ? 'From' : 'To'}
+                                        {type === 'source' ? t.from : t.to}
                                     </motion.span>
                                 </AnimatePresence>
                             </div>
@@ -177,6 +235,23 @@ export function CurrencyCard({
                         style={{ fontWeight: 500 }}
                     />
                 )}
+
+            </div>
+
+            {/* Human Readable Helper */}
+            <div className="h-4 mt-1 pl-1">
+                <AnimatePresence>
+                    {formatHumanReadable(value) && (
+                        <motion.span
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="text-xs font-normal text-white/40 tracking-wide"
+                        >
+                            {formatHumanReadable(value)}
+                        </motion.span>
+                    )}
+                </AnimatePresence>
             </div>
 
             {/* Dynamic Corner Glow */}

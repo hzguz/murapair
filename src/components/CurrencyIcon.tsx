@@ -22,6 +22,22 @@ export function CurrencyIcon({ currency, className }: CurrencyIconProps) {
                 return "https://flagcdn.com/w80/eu.png";
             case 'GBP':
                 return "https://flagcdn.com/w80/gb.png";
+            case 'JPY':
+                return "https://flagcdn.com/w80/jp.png";
+            case 'CAD':
+                return "https://flagcdn.com/w80/ca.png";
+            case 'AUD':
+                return "https://flagcdn.com/w80/au.png";
+            case 'ARS':
+                return "https://flagcdn.com/w80/ar.png";
+            case 'CNY':
+                return "https://flagcdn.com/w80/cn.png";
+            case 'CHF':
+                return "https://flagcdn.com/w80/ch.png";
+            case 'NZD':
+                return "https://flagcdn.com/w80/nz.png";
+            case 'SGD':
+                return "https://flagcdn.com/w80/sg.png";
             default:
                 return null;
         }
