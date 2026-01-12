@@ -43,6 +43,12 @@ export function CurrencyConverter() {
             case 'GBP': return 'rose';
             case 'USD': return 'red';
             case 'BRL': return 'emerald';
+            case 'JPY': return 'purple';
+            case 'CAD': return 'red';
+            case 'AUD': return 'orange';
+            case 'ARS': return 'blue';
+            case 'CNY': return 'red';
+            case 'CHF': return 'red';
             default: return 'default';
         }
     };
@@ -55,6 +61,7 @@ export function CurrencyConverter() {
             case 'rose': return 'from-rose-500/40';
             case 'red': return 'from-red-600/40';
             case 'emerald': return 'from-green-500/40';
+            case 'purple': return 'from-purple-500/40';
             default: return 'from-white/20';
         }
     };

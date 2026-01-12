@@ -122,9 +122,9 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                         animate={{ y: 0 }}
                         exit={{ y: "100%" }}
                         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                        className="fixed bottom-4 left-4 right-4 z-[60] bg-[#111] rounded-[2rem] border border-white/10 p-4 md:p-6 pb-2 h-[50vh] md:h-[60vh] shadow-2xl origin-bottom flex flex-col"
+                        className="fixed bottom-0 left-0 right-0 md:bottom-4 md:left-4 md:right-4 z-[60] bg-[#111] md:rounded-[2rem] rounded-t-[2rem] border-t md:border border-white/10 p-0 md:p-6 pb-2 h-[50vh] md:h-[60vh] shadow-2xl origin-bottom flex flex-col"
                     >
-                        <div className="flex justify-between items-center mb-4 md:mb-6 px-2 shrink-0">
+                        <div className="flex justify-between items-center mb-4 md:mb-6 px-6 pt-6 md:pt-0 md:px-2 shrink-0">
                             <h2 className="text-xl font-semibold text-white tracking-tight">{t.selectCurrency}</h2>
                             <motion.button
                                 whileHover={{ scale: 1.1, rotate: 90 }}
@@ -137,7 +137,7 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                         </div>
 
                         {/* Toggle Switch */}
-                        <div className="relative flex mb-4 px-2">
+                        <div className="relative flex mb-4 px-4 md:px-2">
                             <div className="relative flex w-full bg-white/5 rounded-full p-1">
                                 {/* Sliding Background */}
                                 <motion.div
@@ -193,7 +193,7 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                             <div
                                 ref={scrollRef}
                                 onScroll={checkScroll}
-                                className="flex-1 overflow-y-auto min-h-0 px-4 pt-4 pb-4 scroll-smooth" // Increased padding to ensure zoom/shadows aren't clipped
+                                className="flex-1 overflow-y-auto min-h-0 px-4 pt-4 pb-4 scroll-smooth" // Fixed: Consistent padding on mobile/desktop
                             >
                                 {activeTab === 'currencies' ? (
                                     <motion.div
@@ -245,7 +245,7 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                                                                     size={18}
                                                                     className={cn(
                                                                         "transition-colors duration-300",
-                                                                        isFav ? "fill-amber-400 text-amber-400" : "text-white/20 group-hover/star:text-white/50"
+                                                                        isFav ? "fill-white text-white" : "text-white/20 group-hover/star:text-white/50"
                                                                     )}
                                                                 />
                                                             </motion.div>
@@ -345,6 +345,9 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                                 </button>
                             </div>
                         )}
+
+                        {/* Safe Area for Mobile */}
+                        <div className="h-6 md:hidden shrink-0" />
                     </motion.div>
                 </>
             )}
