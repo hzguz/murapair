@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 
 type Language = 'en' | 'pt';
@@ -110,29 +110,17 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-    const [language, setLanguage] = useState<Language>('en'); // Default to EN
-
-    useEffect(() => {
-        const detectCountry = async () => {
-            try {
-                const response = await fetch('https://ipapi.co/json/');
-                const data = await response.json();
-                if (data.country_code === 'BR') {
-                    setLanguage('pt');
-                } else {
-                    setLanguage('en');
-                }
-            } catch (error) {
-                console.error("Failed to detect country:", error);
-                // Fallback to browser language if API fails
-                if (navigator.language.startsWith('pt')) {
-                    setLanguage('pt');
-                }
+    const [language, setLanguage] = useState<Language>(() => {
+        // 1. Try to get logic from browser language (Instant & Reliable)
+        if (typeof window !== 'undefined' && window.navigator) {
+            const browserLang = window.navigator.language || window.navigator.languages[0];
+            if (browserLang.toLowerCase().includes('pt')) {
+                return 'pt';
             }
-        };
-
-        detectCountry();
-    }, []);
+        }
+        // 2. Default to English
+        return 'en';
+    });
 
     return (
         <LanguageContext.Provider value={{ language, t: translations[language], setLanguage }}>

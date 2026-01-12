@@ -64,11 +64,12 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
     };
 
     useEffect(() => {
+        if (isOpen) {
+            setActiveTab('currencies');
+        }
         checkScroll();
         // Re-check when sortedCurrencies changes (filter update)
-        checkScroll();
-        // Re-check when sortedCurrencies changes (filter update)
-    }, [isOpen, favorites, activeTab]); // favorites might change order
+    }, [isOpen]); // Reset tab when opening
 
     // Logic Fix: Prevent selecting the same currency.
     // If we are selecting 'source', hide the currency that is currently 'target'.
@@ -121,9 +122,9 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                         animate={{ y: 0 }}
                         exit={{ y: "100%" }}
                         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                        className="fixed bottom-4 left-4 right-4 z-[60] bg-[#111] rounded-[2rem] border border-white/10 p-6 pb-2 h-[60vh] shadow-2xl origin-bottom flex flex-col"
+                        className="fixed bottom-4 left-4 right-4 z-[60] bg-[#111] rounded-[2rem] border border-white/10 p-4 md:p-6 pb-2 h-[50vh] md:h-[60vh] shadow-2xl origin-bottom flex flex-col"
                     >
-                        <div className="flex justify-between items-center mb-6 px-2 shrink-0">
+                        <div className="flex justify-between items-center mb-4 md:mb-6 px-2 shrink-0">
                             <h2 className="text-xl font-semibold text-white tracking-tight">{t.selectCurrency}</h2>
                             <motion.button
                                 whileHover={{ scale: 1.1, rotate: 90 }}
@@ -213,13 +214,13 @@ export function CurrencySelector({ isOpen, onClose, type }: CurrencySelectorProp
                                                 >
                                                     <button
                                                         onClick={() => handleSelect(curr)}
-                                                        className="w-full flex items-center gap-4 p-3 rounded-[1.2rem] border border-white/5 bg-white/5 hover:bg-white/10 hover:scale-[1.01] active:scale-[0.99] transition-all group text-left relative"
+                                                        className="w-full flex items-center gap-3 md:gap-4 p-2 md:p-3 rounded-[1.2rem] border border-white/5 bg-white/5 hover:bg-white/10 hover:scale-[1.01] active:scale-[0.99] transition-all group text-left relative"
                                                     >
-                                                        <div className="w-12 h-12 rounded-full overflow-hidden shadow-md shrink-0">
+                                                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden shadow-md shrink-0">
                                                             <CurrencyIcon currency={curr} className="w-full h-full" />
                                                         </div>
                                                         <div className="flex flex-col items-start flex-1">
-                                                            <span className="text-lg font-semibold text-white tracking-tight">{curr}</span>
+                                                            <span className="text-base md:text-lg font-semibold text-white tracking-tight">{curr}</span>
                                                             <span className="text-xs text-white/50 font-medium">
                                                                 {t.currencies[curr] || curr}
                                                             </span>
